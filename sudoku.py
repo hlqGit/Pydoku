@@ -1,17 +1,6 @@
-# Example file showing a circle moving on screen
 import pygame
 import random
 from generate_board import generate_board
-
-# pygame setup
-pygame.init()
-screen = pygame.display.set_mode((720, 800))
-running = True
-clock = pygame.time.Clock()
-selected_square = None
-user_input_squares = []
-pygame.display.set_caption("Sudoku")
-won = False
 
 key = generate_board()
 board = [row.copy() for row in key]
@@ -38,6 +27,15 @@ for _ in range(remove):
 # Uncomment to print key
 # for elem in key:
 #     print(elem)
+
+pygame.init()
+screen = pygame.display.set_mode((720, 800))
+running = True
+clock = pygame.time.Clock()
+selected_square = None
+user_input_squares = []
+pygame.display.set_caption("Sudoku")
+won = False
 
 while running:
 
