@@ -51,6 +51,7 @@ user_input_squares = []
 won = False
 notes = []
 time_noted = 0
+arrow_timer = 0
 
 # Main loop
 while running:
@@ -91,12 +92,31 @@ while running:
     # ---------- HIGHLIGHT SELECTED SQUARE ---------- #
     if selected_square is not None and not won:
         i, j = selected_square
-        # Cannot select a square if the user did not input the number in the square.
-        # User can select if empty square.
-        if board[j][i] != 0 and selected_square not in user_input_squares:
-            selected_square = None
-        if selected_square is not None:
-            pygame.draw.rect(screen, "lightblue", ((i * 80) + 2, (j * 80) + 2, 77, 77))
+        pygame.draw.rect(screen, "lightblue", ((i * 80) + 2, (j * 80) + 2, 77, 77))
+    
+    # ---------- ARROW KEY NAVIGATION ---------- #
+    keys = pygame.key.get_pressed()
+    if selected_square is not None: 
+        if keys[pygame.K_UP] and pygame.time.get_ticks() - arrow_timer > 125:
+            arrow_timer = pygame.time.get_ticks()
+            x, y = selected_square
+            if y > 0:
+                selected_square = (x, y - 1)
+        if keys[pygame.K_DOWN] and pygame.time.get_ticks() - arrow_timer > 125:
+            arrow_timer = pygame.time.get_ticks()
+            x, y = selected_square
+            if y < 8:
+                selected_square = (x, y + 1)
+        if keys[pygame.K_LEFT] and pygame.time.get_ticks() - arrow_timer > 125:
+            arrow_timer = pygame.time.get_ticks()
+            x, y = selected_square
+            if x > 0:
+                selected_square = (x - 1, y)
+        if keys[pygame.K_RIGHT] and pygame.time.get_ticks() - arrow_timer > 125:
+            arrow_timer = pygame.time.get_ticks()
+            x, y = selected_square
+            if x < 8:
+                selected_square = (x + 1, y)
 
     # ---------- DRAW BOARD NUMBERS ---------- #
     for i in range(9):
@@ -150,8 +170,8 @@ while running:
     keys = pygame.key.get_pressed()
     for i in range(1, 10):
         if keys[pygame.K_0 + i]:
-            # ensure user has selected a square before inputting a number
-            if selected_square is not None:
+            # ensure user has selected a square before inputting a number and selected square does not contain a pre-generated number
+            if selected_square is not None and ((selected_square[0], selected_square[1]) in user_input_squares or board[selected_square[1]][selected_square[0]] == 0):
                 x, y = selected_square
                 # if user is holding shift, add number to note list if not already in note list and no number is in square
                 if keys[pygame.K_LSHIFT] and board[y][x] == 0:
