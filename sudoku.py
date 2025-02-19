@@ -8,13 +8,14 @@ key = generate_board()
 board = [row.copy() for row in key]
 
 # Constants for difficulty levels
+TEST = 3
 EASY = 45
 MEDIUM = 55
 HARD = 65
 
 # get user input for difficulty and and make sure user input is an integer between 1 and 3
 difficulty = int(input("Enter a number for the difficulty level: 1. Easy, 2. Medium, or 3. Hard: "))
-while difficulty not in [1, 2, 3]:
+while difficulty not in [1, 2, 3, 7]:
     difficulty = int(input("Enter a number for the difficulty level: 1. Easy, 2. Medium, or 3. Hard: "))
 
 # determine how many numbers to remove based on user-entered difficulty
@@ -25,6 +26,8 @@ match difficulty:
         remove = MEDIUM
     case 3:
         remove = HARD
+    case 7:
+        remove = TEST
 
 # remove numbers from the board to create the puzzle
 for _ in range(remove):
@@ -46,6 +49,8 @@ running = True
 selected_square = None
 user_input_squares = []
 won = False
+notes = []
+time_noted = 0
 
 # Main loop
 while running:
@@ -114,6 +119,32 @@ while running:
                     text = font.render(str(board[j][i]), True, "black")
                 text_rect = text.get_rect(center=(i * 80 + 40, j * 80 + 40))
                 screen.blit(text, text_rect)
+            # draw notes on the outside of the square
+            for note in notes:
+                if note[0] == i and note[1] == j:
+                    font = pygame.font.Font(None, 18)
+                    text = font.render(str(note[2]), True, "black")
+                    match(note[2]):
+                        case 1:
+                            text_rect = text.get_rect(center=(i * 80 + 15, j * 80 + 15))
+                        case 2:
+                            text_rect = text.get_rect(center=(i * 80 + 40, j * 80 + 15))
+                        case 3:
+                            text_rect = text.get_rect(center=(i * 80 + 65, j * 80 + 15))
+                        case 4:
+                            text_rect = text.get_rect(center=(i * 80 + 15, j * 80 + 40))
+                        case 5:
+                            text_rect = text.get_rect(center=(i * 80 + 40, j * 80 + 40))
+                        case 6:
+                            text_rect = text.get_rect(center=(i * 80 + 65, j * 80 + 40))
+                        case 7:
+                            text_rect = text.get_rect(center=(i * 80 + 15, j * 80 + 65))
+                        case 8:
+                            text_rect = text.get_rect(center=(i * 80 + 40, j * 80 + 65))
+                        case 9:
+                            text_rect = text.get_rect(center=(i * 80 + 65, j * 80 + 65))
+                    screen.blit(text, text_rect)
+            
 
     # ---------- USER INPUT NUMBER ---------- #
     keys = pygame.key.get_pressed()
@@ -122,8 +153,23 @@ while running:
             # ensure user has selected a square before inputting a number
             if selected_square is not None:
                 x, y = selected_square
-                board[y][x] = i
-                user_input_squares.append((x, y))
+                # if user is holding shift, add number to note list if not already in note list and no number is in square
+                if keys[pygame.K_LSHIFT] and board[y][x] == 0:
+                    time_since_noted = pygame.time.get_ticks() - time_noted
+                    # if number not noted, add to notes list if 200 ms has passed since last note activity
+                    if (x, y, i) not in notes and time_since_noted > 200:
+                        notes.append((x, y, i))
+                        time_noted = pygame.time.get_ticks()
+                    # if number is noted, remove from notes list if 200 ms has passed since last note activity
+                    elif (x, y, i) in notes and time_since_noted > 200:
+                        notes.remove((x, y, i))
+                        time_noted = pygame.time.get_ticks()
+                # if user is not holding shift, input number into square
+                elif not keys[pygame.K_LSHIFT]:
+                    board[y][x] = i
+                    user_input_squares.append((x, y))
+                    # delete all notes in square if user inputs a number
+                    notes = [note for note in notes if note[0] != x or note[1] != y]
 
     # ---------- CLEAR NUMBER ---------- #
     if keys[pygame.K_BACKSPACE]:

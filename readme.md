@@ -28,5 +28,4 @@ Select in the terminal what difficulty (type 1, 2, or 3 and press enter)
 <img width="725" alt="Screenshot 2025-02-17 at 14 45 47" src="https://github.com/user-attachments/assets/5f8c4e70-19d1-466c-b462-4c81bc7fa734" />
 
 ## Goals:
-* Make a note functionality
 * Be able to use arrow keys to navigate
