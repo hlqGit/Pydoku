@@ -1,6 +1,7 @@
 import random
 
 def is_valid(board, row, col, num):
+    """Checks if a number is valid in a sudoku board."""
     if num in board[row]:
         return False
     
@@ -16,6 +17,7 @@ def is_valid(board, row, col, num):
     return True
 
 def solve_sudoku(board, row=0, col=0):
+    """Solves for a valid sudoku board recursively."""
     if row == 9:
         return True
     
@@ -36,9 +38,10 @@ def solve_sudoku(board, row=0, col=0):
     return False
 
 def generate_board():
-    board = [[0 for _ in range(9)] for _ in range(9)]
-    solve_sudoku(board)
-    return board
+    """Generates a nine by nine 2d list with numbers that make a valid sudoku board."""
+    sudoku_board = [[0 for _ in range(9)] for _ in range(9)]
+    solve_sudoku(sudoku_board)
+    return sudoku_board
 
 if __name__ == "__main__":
     sudoku_board = generate_board()
