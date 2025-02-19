@@ -176,12 +176,12 @@ while running:
                 # if user is holding shift, add number to note list if not already in note list and no number is in square
                 if keys[pygame.K_LSHIFT] and board[y][x] == 0:
                     time_since_noted = pygame.time.get_ticks() - time_noted
-                    # if number not noted, add to notes list if 200 ms has passed since last note activity
-                    if (x, y, i) not in notes and time_since_noted > 200:
+                    # if number not noted, add to notes list if 150 ms has passed since last note activity
+                    if (x, y, i) not in notes and time_since_noted > 150:
                         notes.append((x, y, i))
                         time_noted = pygame.time.get_ticks()
-                    # if number is noted, remove from notes list if 200 ms has passed since last note activity
-                    elif (x, y, i) in notes and time_since_noted > 200:
+                    # if number is noted, remove from notes list if 150 ms has passed since last note activity
+                    elif (x, y, i) in notes and time_since_noted > 150:
                         notes.remove((x, y, i))
                         time_noted = pygame.time.get_ticks()
                 # if user is not holding shift, input number into square
